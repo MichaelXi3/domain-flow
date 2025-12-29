@@ -4,6 +4,8 @@ Track time, not tasks. Reduce anxiety, enter flow.
 
 TimeFlow is a personal productivity app that helps you understand where your time goes without the stress of to-do lists and overdue tasks. Instead of planning what you'll do, you record what you *actually* do—in time blocks—and reflect on patterns.
 
+![TimeFlow](/logo_bar.png)
+
 ---
 
 ## Philosophy
