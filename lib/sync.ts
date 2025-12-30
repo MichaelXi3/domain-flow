@@ -282,6 +282,19 @@ async function pullEntityFromSupabase(
       const localEntity = mapServerToLocal(entity, serverRow);
       const existing = await getExistingEntity(entity, localEntity.id);
 
+      // Check if there's a pending outbox event for this entity
+      // If so, skip updating from server to avoid overwriting local pending changes
+      const pendingOutboxEvent = await db.outbox
+        .where('entityId')
+        .equals(localEntity.id)
+        .and((event) => event.status === 'pending' || event.status === 'syncing' || event.status === 'failed')
+        .first();
+
+      if (pendingOutboxEvent) {
+        console.log(`Skipping pull for ${entity} ${localEntity.id} - has pending outbox event`);
+        continue; // Skip this entity, local pending change takes precedence
+      }
+
       // If server entity is deleted, physically remove it from local DB
       if (localEntity.deletedAt) {
         if (existing) {
@@ -294,7 +307,7 @@ async function pullEntityFromSupabase(
       }
 
       if (existing) {
-        // Check for conflict (server wins)
+        // Check for conflict (server wins only if no pending local changes)
         const serverUpdatedAt = new Date(serverRow.updated_at).getTime();
         const localUpdatedAt = existing.updatedAt;
 

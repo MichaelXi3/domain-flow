@@ -132,7 +132,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
 
-  const allTags = useLiveQuery(() => db.tags.toArray(), []);
+  const allTags = useLiveQuery(async () => {
+    const tags = await db.tags.toArray();
+    return tags.filter((tag) => !tag.deletedAt);
+  }, []);
   const allDomains = useLiveQuery(() => dbHelpers.getAllDomains(), []);
 
   // Update current time every second for flow tracking

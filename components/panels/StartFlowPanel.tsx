@@ -51,7 +51,10 @@ export const StartFlowPanel: React.FC<StartFlowPanelProps> = ({ onClose }) => {
   const [isClosing, setIsClosing] = useState(false);
   const [isTagWarningOpen, setIsTagWarningOpen] = useState(false);
 
-  const allTags = useLiveQuery(() => db.tags.toArray(), []);
+  const allTags = useLiveQuery(async () => {
+    const tags = await db.tags.toArray();
+    return tags.filter((tag) => !tag.deletedAt);
+  }, []);
   const allDomains = useLiveQuery(() => dbHelpers.getAllDomains(), []);
 
   // Group tags by domain ID
