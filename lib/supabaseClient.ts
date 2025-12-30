@@ -59,7 +59,8 @@ export const signInWithGoogle = async () => {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: typeof window !== 'undefined' ? window.location.origin : undefined,
+      // CRITICAL: Redirect to a client-side callback page where PKCE exchange happens
+      redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : undefined,
       queryParams: {
         access_type: 'offline',
         prompt: 'consent',
