@@ -151,10 +151,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
     if (!isSupabaseConfigured()) return;
 
     // Check current user on mount
-    getCurrentUser().then((user) => {
+    getCurrentUser().then(async (user) => {
       if (user) {
         setUserId(user.id);
         setUserEmail(user.email || null);
+
+        // Clean up placeholder domain if user is logged in
+        // This handles the case where initializeDatabase() ran before auth was restored
+        const placeholderDomain = await db.domains
+          .filter((d) => d.name === 'Create your Domain' && !d.userId)
+          .first();
+        if (placeholderDomain) {
+          await db.domains.delete(placeholderDomain.id);
+          console.log('[Auth] Cleaned up placeholder domain on mount');
+        }
       }
     });
 
