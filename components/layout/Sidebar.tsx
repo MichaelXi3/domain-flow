@@ -642,8 +642,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
         </div>
         <div className="space-y-1">
           {allDomains && allDomains.length === 0 && (
-            <div className="px-3 py-8 text-center">
-              <p className="text-sm text-gray-400 mb-2">No domains yet</p>
+            <div className="px-3 py-5 text-center">
               <p className="text-xs text-gray-500">
                 Click "+ Domain" above to create your first domain
               </p>
