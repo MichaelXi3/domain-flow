@@ -294,13 +294,13 @@ export default function InsightsPage() {
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
         <div
-          className="px-6 py-4 flex items-center justify-between"
+          className="px-4 lg:px-6 py-3 lg:py-4 flex items-center justify-between gap-2"
           style={{ background: 'var(--card)', borderBottom: '1px solid var(--border)' }}
         >
-          <div className="flex items-center gap-2 lg:gap-4">
+          <div className="flex items-center gap-2 lg:gap-4 min-w-0">
             {/* Mobile hamburger menu */}
             <button
-              className="lg:hidden p-2 -ml-2 rounded-lg transition-colors hover:bg-gray-100"
+              className="lg:hidden p-2 -ml-2 rounded-lg transition-colors hover:bg-gray-100 flex-shrink-0"
               onClick={() => setLeftSidebarOpen(true)}
               title="Open menu"
             >
@@ -309,23 +309,23 @@ export default function InsightsPage() {
               </svg>
             </button>
 
-            <div>
-              <h1 className="text-2xl font-semibold" style={{ color: 'var(--foreground)' }}>
+            <div className="min-w-0">
+              <h1 className="text-xl lg:text-2xl font-semibold truncate" style={{ color: 'var(--foreground)' }}>
                 Insights
               </h1>
-              <p className="text-sm mt-1" style={{ color: 'var(--muted-foreground)' }}>
+              <p className="text-sm mt-1 hidden lg:block" style={{ color: 'var(--muted-foreground)' }}>
                 Visualize your time patterns
               </p>
             </div>
           </div>
 
           {/* Time range selector */}
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-1 lg:gap-2 items-center flex-shrink-0">
             {(['week', 'month', 'year', 'custom'] as const).map((range) => (
               <button
                 key={range}
                 onClick={() => setTimeRange(range)}
-                className="px-4 py-2 text-sm font-medium rounded-lg transition-colors capitalize"
+                className="px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-sm font-medium rounded-lg transition-colors capitalize"
                 style={{
                   backgroundColor: timeRange === range ? 'var(--primary)' : 'var(--hover)',
                   color: timeRange === range ? 'white' : 'var(--foreground)',

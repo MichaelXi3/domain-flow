@@ -133,17 +133,17 @@ export default function HomePage() {
       <div className="flex-1 flex flex-col overflow-hidden relative z-10">
         {/* Minimal header */}
         <div
-          className="px-4 lg:px-6 py-3 flex items-center justify-between relative z-10"
+          className="px-3 lg:px-6 py-2.5 lg:py-3 flex items-center justify-between relative z-10 gap-2"
           style={{
             background: 'var(--card)',
             boxShadow:
               '0 2px 10px -2px rgba(74, 140, 199, 0.08), 0 1px 3px rgba(74, 140, 199, 0.04)',
           }}
         >
-          <div className="flex items-center gap-2 lg:gap-4">
+          <div className="flex items-center gap-1 lg:gap-4 min-w-0 flex-1">
             {/* Mobile hamburger menu */}
             <button
-              className="lg:hidden p-2 -ml-2 rounded-lg transition-colors hover:bg-gray-100"
+              className="lg:hidden p-1.5 -ml-1 rounded-lg transition-colors hover:bg-gray-100 flex-shrink-0"
               onClick={() => setLeftSidebarOpen(true)}
               title="Open menu"
             >
@@ -152,29 +152,30 @@ export default function HomePage() {
               </svg>
             </button>
             <button
-              className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+              className="text-xs text-gray-500 hover:text-gray-700 transition-colors flex-shrink-0 hidden sm:block"
               onClick={() => setSelectedDate(addDays(selectedDate, -7))}
             >
               ← Prev
             </button>
             <button
-              className="text-xs lg:text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors"
+              className="text-xs lg:text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors truncate min-w-0"
               onClick={() => setSelectedDate(new Date())}
             >
-              {formatDateDisplay(weekStart)} - {formatDateDisplay(weekEnd)}
+              <span className="hidden sm:inline">{formatDateDisplay(weekStart)} - {formatDateDisplay(weekEnd)}</span>
+              <span className="sm:hidden">{formatDateDisplay(weekStart).split(',')[0]}</span>
             </button>
             <button
-              className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+              className="text-xs text-gray-500 hover:text-gray-700 transition-colors flex-shrink-0 hidden sm:block"
               onClick={() => setSelectedDate(addDays(selectedDate, 7))}
             >
               Next →
             </button>
           </div>
 
-          <div className="flex items-center gap-2 lg:gap-3">
+          <div className="flex items-center gap-1.5 lg:gap-3 flex-shrink-0">
             <button
               onClick={() => router.push('/insights')}
-              className="text-xs font-medium transition-colors px-2 lg:px-3 py-1.5 rounded-lg"
+              className="text-xs font-medium transition-colors px-2 lg:px-3 py-1.5 rounded-lg whitespace-nowrap"
               style={{ color: 'var(--primary)', backgroundColor: 'var(--hover)' }}
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--primary-light)')}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--hover)')}
@@ -183,7 +184,7 @@ export default function HomePage() {
             </button>
             <button
               onClick={() => setSelectedDate(new Date())}
-              className="px-2 lg:px-3 py-1.5 text-xs font-medium text-white rounded-lg transition-colors"
+              className="px-2 lg:px-3 py-1.5 text-xs font-medium text-white rounded-lg transition-colors whitespace-nowrap"
               style={{ backgroundColor: 'var(--primary)' }}
               onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.9')}
               onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
