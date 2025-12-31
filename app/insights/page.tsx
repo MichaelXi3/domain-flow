@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { DateInput } from '@/components/ui/DateInput';
 import { db, initializeDatabase, dbHelpers } from '@/lib/db';
@@ -27,7 +28,7 @@ import {
 
 export default function InsightsPage() {
   const router = useRouter();
-  const { settings } = useAppStore();
+  const { settings, isLeftSidebarOpen, setLeftSidebarOpen } = useAppStore();
   const [isInitialized, setIsInitialized] = useState(false);
   const [timeRange, setTimeRange] = useState<'week' | 'month' | 'year' | 'custom'>('week');
   const [customStartDate, setCustomStartDate] = useState(() => {
@@ -258,7 +259,37 @@ export default function InsightsPage() {
 
   return (
     <div className="h-screen flex" style={{ background: 'var(--background)' }}>
-      <Sidebar />
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:block">
+        <Sidebar />
+      </div>
+
+      {/* Mobile Left Sidebar Overlay */}
+      <AnimatePresence>
+        {isLeftSidebarOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/30 z-40 lg:hidden"
+              onClick={() => setLeftSidebarOpen(false)}
+            />
+            {/* Sidebar */}
+            <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+              className="fixed left-0 top-0 h-full z-50 lg:hidden"
+            >
+              <Sidebar onClose={() => setLeftSidebarOpen(false)} />
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
@@ -266,13 +297,26 @@ export default function InsightsPage() {
           className="px-6 py-4 flex items-center justify-between"
           style={{ background: 'var(--card)', borderBottom: '1px solid var(--border)' }}
         >
-          <div>
-            <h1 className="text-2xl font-semibold" style={{ color: 'var(--foreground)' }}>
-              Insights
-            </h1>
-            <p className="text-sm mt-1" style={{ color: 'var(--muted-foreground)' }}>
-              Visualize your time patterns
-            </p>
+          <div className="flex items-center gap-2 lg:gap-4">
+            {/* Mobile hamburger menu */}
+            <button
+              className="lg:hidden p-2 -ml-2 rounded-lg transition-colors hover:bg-gray-100"
+              onClick={() => setLeftSidebarOpen(true)}
+              title="Open menu"
+            >
+              <svg className="w-5 h-5" style={{ color: 'var(--foreground)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+
+            <div>
+              <h1 className="text-2xl font-semibold" style={{ color: 'var(--foreground)' }}>
+                Insights
+              </h1>
+              <p className="text-sm mt-1" style={{ color: 'var(--muted-foreground)' }}>
+                Visualize your time patterns
+              </p>
+            </div>
           </div>
 
           {/* Time range selector */}
