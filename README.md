@@ -1,6 +1,6 @@
-# DomainFlow — Calm Time Journaling
+# DomainFlow
 
-DomainFlow is a personal productivity app that helps you understand where your time goes without the stress of to-do lists and overdue tasks. Instead of planning what you'll do, you record what you *actually* do—in time blocks—and reflect on patterns.
+DomainFlow is a personal time-awareness app that helps you understand how your time flows across different life domains — without the stress of to-do lists or overdue tasks. Instead of planning what you should do, you capture what you actually do in time blocks and reflect on long-term patterns.
 
 <p align="center">
   <img src="public/logo_bar.png" alt="DomainFlow" width="280" />

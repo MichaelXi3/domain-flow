@@ -1,7 +1,7 @@
 {
-  "name": "DomainFlow - Calm Time Journaling",
+  "name": "DomainFlow",
   "short_name": "DomainFlow",
-  "description": "Reduce productivity anxiety and enter flow by tracking time, not tasks",
+  "description": "Track domains, not tasks.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
