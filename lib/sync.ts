@@ -1,5 +1,5 @@
 import { db, getOrCreateClientId } from './db';
-import { getSupabase, getCurrentUser } from './supabaseClient';
+import { getSupabaseBrowserClient, getCurrentUser } from './supabaseClient';
 import { OutboxEvent, TimeSlot, Tag, DomainEntity, DailyLog } from './types';
 
 const SYNC_BATCH_SIZE = 50;
@@ -11,7 +11,8 @@ const PULL_DAYS_RANGE = 90; // Pull last 90 days of data
  * Implements retry logic with exponential backoff
  */
 export async function syncPush(): Promise<{ success: number; failed: number }> {
-  const supabase = getSupabase();
+  // Use SSR browser client which has auth session from cookies
+  const supabase = getSupabaseBrowserClient();
   if (!supabase) {
     console.log('Supabase not configured, skipping push');
     return { success: 0, failed: 0 };
@@ -190,7 +191,8 @@ function mapLocalToServer(entity: string, local: any): any {
  * Pull incremental changes from Supabase
  */
 export async function syncPull(): Promise<{ pulled: number; conflicts: number }> {
-  const supabase = getSupabase();
+  // Use SSR browser client which has auth session from cookies
+  const supabase = getSupabaseBrowserClient();
   if (!supabase) {
     console.log('Supabase not configured, skipping pull');
     return { pulled: 0, conflicts: 0 };
