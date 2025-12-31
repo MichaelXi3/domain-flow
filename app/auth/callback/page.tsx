@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getSupabase } from '@/lib/supabaseClient';
+import { getSupabaseBrowserClient } from '@/lib/supabaseClient';
 
 export default function AuthCallbackPage() {
   const router = useRouter();
@@ -10,18 +10,25 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     const handleCallback = async () => {
-      const supabase = getSupabase();
+      // Use SSR-compatible browser client that stores auth in cookies
+      const supabase = getSupabaseBrowserClient();
       if (!supabase) {
         setError('Supabase not configured');
         return;
       }
 
       try {
+        // Get the code from URL params
+        const code = new URL(window.location.href).searchParams.get('code');
+        
+        if (!code) {
+          setError('No authorization code found');
+          return;
+        }
+
         // Exchange the code for a session
-        // This is the critical step that must happen on the client side
-        const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(
-          window.location.href
-        );
+        // @supabase/ssr stores code_verifier in cookies, not localStorage
+        const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
 
         if (exchangeError) {
           console.error('PKCE exchange error:', exchangeError);
@@ -31,6 +38,7 @@ export default function AuthCallbackPage() {
 
         // Success! Redirect to home
         router.push('/');
+        router.refresh(); // Refresh to update server components with new session
       } catch (err) {
         console.error('Unexpected error during auth callback:', err);
         setError(err instanceof Error ? err.message : 'Unknown error');
