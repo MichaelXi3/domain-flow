@@ -152,7 +152,7 @@ export default function HomePage() {
               </svg>
             </button>
             <button
-              className="text-xs text-gray-500 hover:text-gray-700 transition-colors flex-shrink-0 hidden sm:block"
+              className="text-xs text-gray-500 hover:text-gray-700 transition-colors flex-shrink-0"
               onClick={() => setSelectedDate(addDays(selectedDate, -7))}
             >
               ← Prev
@@ -161,11 +161,10 @@ export default function HomePage() {
               className="text-xs lg:text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors truncate min-w-0"
               onClick={() => setSelectedDate(new Date())}
             >
-              <span className="hidden sm:inline">{formatDateDisplay(weekStart)} - {formatDateDisplay(weekEnd)}</span>
-              <span className="sm:hidden">{formatDateDisplay(weekStart).split(',')[0]}</span>
+              {formatDateDisplay(weekStart)} - {formatDateDisplay(weekEnd)}
             </button>
             <button
-              className="text-xs text-gray-500 hover:text-gray-700 transition-colors flex-shrink-0 hidden sm:block"
+              className="text-xs text-gray-500 hover:text-gray-700 transition-colors flex-shrink-0"
               onClick={() => setSelectedDate(addDays(selectedDate, 7))}
             >
               Next →
