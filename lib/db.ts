@@ -572,11 +572,22 @@ export async function initializeDatabase() {
 
   // Assign the promise immediately (synchronously) to prevent other calls from starting
   initializationPromise = (async () => {
+    // Check if user is logged in
+    const userId = getCurrentUserId();
+    
+    // If user is logged in, skip initialization
+    // The sync process will pull their data from the cloud
+    if (userId) {
+      console.log('[initializeDatabase] User logged in, skipping local initialization (will sync from cloud)');
+      return;
+    }
+
     // Check if already initialized inside the async flow
     const count = await db.domains.count();
     if (count > 0) return;
 
-    // Create a single placeholder domain
+    // Create a single placeholder domain for anonymous users
+    console.log('[initializeDatabase] Creating placeholder domain for anonymous user');
     await dbHelpers.createDomain({
       name: 'Create your Domain',
       color: '#A5C8E1',

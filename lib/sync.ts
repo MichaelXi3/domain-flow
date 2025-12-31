@@ -206,9 +206,18 @@ export async function syncPull(): Promise<{ pulled: number; conflicts: number }>
 
   // Get last pull cursor
   const syncState = await db.syncState.get('sync_cursor');
-  const lastPullCursor = syncState?.lastPullCursor;
+  let lastPullCursor = syncState?.lastPullCursor;
 
-  console.log(`[syncPull] Starting pull for user ${user.id}, lastCursor: ${lastPullCursor || 'none (first sync)'}`);
+  // Check if this is the first sync for this user
+  const isFirstSync = !syncState || syncState.userId !== user.id;
+  
+  // If first sync, ignore any existing cursor (it might be from a different user or corrupted)
+  if (isFirstSync) {
+    console.log(`[syncPull] First sync for user ${user.id}, ignoring cursor`);
+    lastPullCursor = undefined;
+  } else {
+    console.log(`[syncPull] Starting pull for user ${user.id}, lastCursor: ${lastPullCursor || 'none'}`);
+  }
 
   let pulledCount = 0;
   let conflictCount = 0;
@@ -232,24 +241,18 @@ export async function syncPull(): Promise<{ pulled: number; conflicts: number }>
     }
   }
 
-  // Update sync state with new cursor (only if we pulled data)
-  if (pulledCount > 0) {
-    await db.syncState.put({
-      id: 'sync_cursor',
-      lastPullCursor: new Date().toISOString(),
-      lastPullAt: Date.now(),
-      userId: user.id,
-    });
-  } else {
-    // First sync or no new data - just update lastPullAt
-    const existing = await db.syncState.get('sync_cursor');
-    await db.syncState.put({
-      id: 'sync_cursor',
-      lastPullCursor: existing?.lastPullCursor || undefined,
-      lastPullAt: Date.now(),
-      userId: user.id,
-    });
-  }
+  // Update sync state with new cursor
+  // Use current time as cursor only if we pulled data, otherwise keep existing cursor
+  const newCursor = pulledCount > 0 ? new Date().toISOString() : lastPullCursor;
+  
+  await db.syncState.put({
+    id: 'sync_cursor',
+    lastPullCursor: newCursor,
+    lastPullAt: Date.now(),
+    userId: user.id,
+  });
+
+  console.log(`[syncPull] Complete: pulled ${pulledCount}, conflicts ${conflictCount}, new cursor: ${newCursor || 'none'}`);
 
   return { pulled: pulledCount, conflicts: conflictCount };
 }

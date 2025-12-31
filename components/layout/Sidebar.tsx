@@ -166,6 +166,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
         const user = await getCurrentUser();
         setUserEmail(user?.email || null);
 
+        // Clear any existing sync cursor to force a full pull
+        await db.syncState.delete('sync_cursor');
+        console.log('[Auth] Cleared sync cursor for fresh user login');
+
+        // Delete placeholder domain if it exists (user will get their real data from cloud)
+        const placeholderDomain = await db.domains
+          .filter((d) => d.name === 'Create your Domain' && !d.userId)
+          .first();
+        if (placeholderDomain) {
+          await db.domains.delete(placeholderDomain.id);
+          console.log('[Auth] Deleted placeholder domain');
+        }
+
         // Migrate local data to cloud
         setIsSyncing(true);
         try {
