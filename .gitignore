@@ -23,8 +23,8 @@ yarn-debug.log*
 yarn-error.log*
 
 # Documentation
-**/*.md
-!**/README.md
+/docs/
+!README.md
 
 # Local env files
 .env*.local
